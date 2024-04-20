@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Bia's Machine</title>
+    <style>
+        /* CSS integrado */
+        body {
+            background-color: rgb(214, 88, 214); /* Define a cor de fundo do body */
+            background-image: url('https://getwallpapers.com/wallpaper/full/1/2/8/260766.jpg');
+            display: flex; /* Define o modelo de exibição como flexível para permitir o alinhamento dos elementos */
+            justify-content: center; /* Alinha os elementos horizontalmente ao centro */
+            align-items: center; /* Alinha os elementos verticalmente ao centro */
+            height: 100vh; /* Define a altura do body como 100% da altura da tela */
+            margin: 0; /* Define margem zero para o body */
+        }
+
+        #container {
+            background-color: rgba(255, 255, 255, 0.8); /* Define a cor de fundo do contêiner com transparência */
+            padding: 20px; /* Adiciona preenchimento ao redor do contêiner */
+            border-radius: 10px; /* Adiciona bordas arredondadas ao contêiner */
+            text-align: center; /* Centraliza o texto dentro do contêiner */
+        }
+
+        h1 {
+            color: #983a84; /* Define a cor do título */
+            font-size: 45px; /* Define o tamanho da fonte do título */
+            margin-bottom: 20px; /* Adiciona margem inferior ao título */
+            /*font google fonts montserrat */
+            font-family: "Noto Serif", serif; 
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: <weight>;
+            font-style: normal;
+        }
+
+        input,
+        select {
+            padding: 8px; /* Adiciona preenchimento aos campos de entrada e select */
+            font-size: 16px; /* Define o tamanho da fonte dos campos de entrada e select */
+            border-radius: 5px; /* Adiciona bordas arredondadas aos campos de entrada e select */
+            margin-bottom: 10px; /* Adiciona margem inferior aos campos de entrada e select */
+        }
+
+        select{
+            background-color: #7d2169; /* Define a cor de fundo do select */
+            cursor: pointer; /* Altera o cursor para uma mãozinha quando passa sobre o select */
+            color: #fff; /* Define a cor do texto no select */
+        }
+
+        select:hover {
+            background-color: #eb1cbe; /* Altera a cor de fundo dos menus suspensos quando o cursor passa sobre eles */
+        }
+
+        button {
+            padding: 8px 16px; /* Adiciona preenchimento ao botão */
+            font-size: 16px; /* Define o tamanho da fonte do botão */
+            border-radius: 5px; /* Adiciona bordas arredondadas ao botão */
+            background-color: #7d2169; /* Define a cor de fundo do botão */
+            color: #fff; /* Define a cor do texto do botão */
+            border: none; /* Remove a borda do botão */
+            cursor: pointer; /* Altera o cursor para uma mão quando passa sobre o botão */
+            margin-bottom: 10px; /* Adiciona margem inferior ao botão */
+        }
+
+        button:hover {
+            background-color: #eb1cbe; /* Altera a cor de fundo do botão quando o cursor passa sobre ele */
+        }
+
+        #output {
+            margin-top: 20px; /* Adiciona margem superior à saída */
+            font-size: 18px; /* Define o tamanho da fonte da saída */
+        }
+
+        #output p {
+            margin-bottom: 10px; /* Adiciona margem inferior aos parágrafos dentro da saída */
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Bia's Machine</h1> <!-- Título da página -->
+        <input id="inputValue" type="text" placeholder="Digite o valor"> <!-- Campo de entrada para o valor a ser convertido -->
+        <select id="inputBase" onchange="mudarPlaceholder()"> <!-- select para selecionar qual a base  -->
+            <option value="decimal">Decimal</option> <!-- Opção para base decimal -->
+            <option value="hexadecimal">Hexadecimal</option> <!-- Opção para base hexadecimal -->
+            <option value="octal">Octal</option> <!-- Opção para base octal -->
+            <option value="binario">Binário</option> <!-- Opção para base binária -->
+        </select>
+        <br><br>
+        <h3>Converter para:</h3> <!-- Título para as opções de conversão -->
+        <input type="checkbox" id="convertDecimal"><label for="convertDecimal">Decimal</label> <!-- Opção de conversão para decimal -->
+        <input type="checkbox" id="convertHexadecimal"><label for="convertHexadecimal">Hexadecimal</label> <!-- Opção de conversão para hexadecimal -->
+        <input type="checkbox" id="convertOctal"><label for="convertOctal">Octal</label> <!-- Opção de conversão para octal -->
+        <input type="checkbox" id="convertBinario"><label for="convertBinario">Binário</label> <!-- Opção de conversão para binário -->
+        <br><br>
+        <button onclick="converter()">Converter</button> <!-- Botão para iniciar a conversão -->
+        <div id="div_resultado"></div> <!-- Local onde os resultados da conversão serão exibidos -->
+        <div id="div_validar"></div><!-- Div para validar se o valor digitado não estiver correspondente com a base q foi selecionada -->
+    </div>
+    <script>
+        function mudarPlaceholder() {
+            // Obtém o valor selecionado no select
+            var escolha = document.getElementById("inputBase").value;
+            var campoEntrada = document.getElementById("inputValue");
+            
+            // Define o placeholder com base na opção selecionada
+            if (escolha === "decimal") {
+                campoEntrada.placeholder = "Digite um valor decimal";
+            } else if (escolha === "hexadecimal") {
+                campoEntrada.placeholder = "Digite um valor hexadecimal";
+            } else if (escolha === "octal") {
+                campoEntrada.placeholder = "Digite um valor octal";
+            } else if (escolha === "binario") {
+                campoEntrada.placeholder = "Digite um valor binário";
+            }
+        }
+
+        function converter() {
+            var inputValue = document.getElementById('inputValue').value; // Obtém o valor de entrada
+            var inputBase = document.getElementById('inputBase').value; // Obtém a base numérica selecionada
+            var div_resultado = document.getElementById('div_resultado'); // Obtém o elemento onde os resultados serão exibidos
+
+            // Verifica se a entrada é válida para a base selecionada, se sao correspondentes, a função esta la embaixo
+            if (!validarEntrada(inputValue, inputBase)) {
+                div_validar.innerHTML='Digite um número válido para a base selecionada!';
+                return;
+            }
+
+            // Converte o valor de entrada para decimal com base na base selecionada
+            var decimalValue = parseInt(inputValue, inputBase === 'hexadecimal' ? 16 : inputBase === 'octal' ? 8 : inputBase === 'binario' ? 2 : 10);
+var resultadoConversao = ''; // Variável para armazenar os resultados da conversão
+
+// Verifica quais opções de conversão estão selecionadas e adiciona os resultados à variável resultadoConversao
+//A propriedade checked em HTML serve para verificar se uma caixa de seleção (checkbox) está marcada (checked) ou desmarcada (unchecked). Ela retorna true se a caixa estiver marcada e false se estiver desmarcada.
+if (document.getElementById('convertDecimal').checked) {
+    resultadoConversao += `<p>Decimal: ${decimalValue}</p>`; // Se a conversão para decimal estiver selecionada, adiciona o valor decimal à variável de resultado
+} // é necessario usar to.string para que os resultados da conversão esteja correta e um formato legível no HTML,pois a função innerHTML espera uma string
+if (document.getElementById('convertHexadecimal').checked) {
+    resultadoConversao += `<p>Hexadecimal: ${decimalValue.toString(16).toUpperCase()}</p>`; // Se a conversão para hexadecimal estiver selecionada, converte o valor decimal para hexadecimal e adiciona à variável de resultado
+}                    //toUpperCase converte a letra do Hexadecimal em maiúscula
+if (document.getElementById('convertOctal').checked) {
+    resultadoConversao += `<p>Octal: ${decimalValue.toString(8)}</p>`; // Se a conversão para octal estiver selecionada, converte o valor decimal para octal e adiciona à variável de resultado
+}
+if (document.getElementById('convertBinario').checked) {
+    resultadoConversao += `<p>Binário: ${decimalValue.toString(2)}</p>`; // Se a conversão para binário estiver selecionada, converte o valor decimal para binário e adiciona à variável de resultado
+}
+div_resultado.innerHTML = resultadoConversao; // Exibe os resultados na div_resultado
+        }
+
+        function validarEntrada(inputValue, inputBase) {
+    var validChars = ''; // Variável para armazenar os caracteres válidos dependendo da base selecionada
+// validChars: lista de caracteres válidos
+    // Define os caracteres válidos com base na base selecionada
+    if (inputBase === 'decimal') {
+        validChars = '0123456789'; // Números de 0 a 9 são válidos em base decimal
+    } else if (inputBase === 'hexadecimal') {
+        validChars = '0123456789ABCDEFabcdef'; // Números de 0 a 9 e letras de A a F (maiúsculas e minúsculas) são válidos em base hexadecimal
+    } else if (inputBase === 'octal') {
+        validChars = '01234567'; // Números de 0 a 7 são válidos em base octal
+    } else if (inputBase === 'binario') {
+        validChars = '01'; // Apenas os números 0 e 1 são válidos em base binária
+    }
+
+    //Em um loop for, o i é  usado como uma convenção para representar o índice atual do loop. Cada vez que o loop é executado, o i é incrementado para apontar para o próximo elemento na lista (ou string, neste caso).
+    // i++ é uma forma abreviada de incrementar o valor da variável i por 1, pra ir pro proximo
+    // Loop(for) para verificar cada caractere da entrada
+    for (var i = 0; i < inputValue.length; i++) {
+        // Verifica se o caractere atual da entrada está presente na lista de caracteres válidos
+        if (validChars.indexOf(inputValue[i]) === -1) {
+            return false; // Se o caractere não for válido, retorna falso indicando uma entrada inválida
+        }
+    }
+    return true; // Se nenhum caractere inválido for encontrado, retorna verdadeiro indicando uma entrada válida
+}
+//indexOf é usado para encontrar a posição de um determinado valor em uma string. Se o valor não for encontrado, ele retorna -1
+//a propriedade length é uma forma conveniente de obter o tamanho de uma string ou array(lista)
+    </script>
+</body>
+</html>
